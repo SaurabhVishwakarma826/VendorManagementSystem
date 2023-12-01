@@ -8,4 +8,5 @@ urlpatterns = [
     path('vendors/<int:pk>/performance/', views.VendorPerformanceView.as_view(), name='vendor-performance'),
     path('purchase_orders/', views.PurchaseOrderListView.as_view(), name='purchaseorder-list'),
     path('purchase_orders/<int:pk>/', views.PurchaseOrderDetailView.as_view(), name='purchaseorder-detail'),
-]
+    path('purchase_orders/<int:pk>/acknowledge/', views.AcknowledgePurchaseOrderView.as_view(), name='acknowledge-purchaseorder'),
+    ]

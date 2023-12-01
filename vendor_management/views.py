@@ -1,13 +1,15 @@
-# vendor_management/views.py
 from django.http import JsonResponse
-from rest_framework import generics
+from django.views.decorators.csrf import csrf_exempt
+from rest_framework.views import APIView
+from django.utils import timezone
 from .models import Vendor, PurchaseOrder, HistoricalPerformance
 from .serializers import VendorSerializer, PurchaseOrderSerializer, VendorPerformanceSerializer
 from rest_framework.response import Response
 from rest_framework import generics, status
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
-
+from django.views import View
+from django.shortcuts import get_object_or_404
 class VendorListView(generics.ListCreateAPIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
@@ -66,4 +68,26 @@ class PurchaseOrderDetailView(generics.RetrieveUpdateDestroyAPIView):
             return Response({"error": "Purchase Order not found"}, status=status.HTTP_404_NOT_FOUND)
         purchase_order.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+class AcknowledgePurchaseOrderView(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    def post(self, request, pk):
+        purchase_order = get_object_or_404(PurchaseOrder, po_number=pk)
+
+        # Check if the current user is the vendor associated with the purchase order
+        # if request.user != purchase_order.vendor.user:
+        #     return Response({'detail': 'You do not have permission to acknowledge this purchase order.'},
+        #                     status=status.HTTP_403_FORBIDDEN)
+
+        # Update acknowledgment_date
+        purchase_order.acknowledgment_date = timezone.now()
+        purchase_order.save()
+
+        # Optionally, you can recalculate vendor performance metrics here
+
+        serializer = PurchaseOrderSerializer(purchase_order)
+        data = {"po_number":pk,"ackTime": timezone.now()}
+        return Response(data)
+
 
