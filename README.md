@@ -45,6 +45,7 @@ The Vendor Management System is a Django-based application designed to manage ve
 
 5. Apply database migrations:
     ```bash
+   python manage.py makemigrations
    python manage.py migrate
 
 6. Create a superuser (for accessing the Django admin panel):
@@ -90,7 +91,7 @@ Retrieve a vendor's performance metrics: **GET /api/vendors/{vendor_id}/performa
 Feel free to contribute to the project by opening issues or creating pull requests.
 
 ## License
-This project is licensed under the Saurabh Vishwakarmas
+This project is licensed under the Saurabh Vishwakarma
 
 
 
